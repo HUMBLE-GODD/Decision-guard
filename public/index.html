@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0d1514" />
+    <meta name="description" content="DecisionGuard memory and decision safety console" />
+    <title>DecisionGuard — Cognitive Safety Console</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="DecisionGuard home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span><span class="brand-name">DecisionGuard</span><span class="brand-subtitle">cognitive safety console</span></span>
+        </a>
+        <div class="topbar-actions">
+          <a class="graph-link graph-link-nav" href="#semantic-graph">Explore graph <span aria-hidden="true">↓</span></a>
+          <span class="environment"><span class="pulse-dot"></span> Local engine</span>
+          <button class="icon-button" id="refresh-button" type="button" title="Refresh dashboard" aria-label="Refresh dashboard">↻</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div>
+            <p class="eyebrow">Institutional memory for consequential work</p>
+            <h1>Make the next decision<br /><em>with the whole system in mind.</em></h1>
+            <p class="hero-copy">DecisionGuard connects durable decisions with living agent memory, so risky changes surface their dependencies before they become incidents.</p>
+            <a class="graph-link" href="#semantic-graph">Explore semantic graph <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-signal">
+            <div class="signal-ring"><span>DG</span></div>
+            <div><strong id="hero-status">Checking engine</strong><span id="hero-status-detail">Connecting to the local control plane</span></div>
+          </div>
+        </section>
+
+        <section class="metrics" aria-label="System metrics">
+          <article class="metric-card accent-card"><span class="metric-label">Active memories</span><strong id="metric-memories">—</strong><span class="metric-note" id="metric-memory-note">Loading living graph</span></article>
+          <article class="metric-card"><span class="metric-label">Synaptic links</span><strong id="metric-synapses">—</strong><span class="metric-note">Associative connections</span></article>
+          <article class="metric-card"><span class="metric-label">Agents</span><strong id="metric-agents">—</strong><span class="metric-note">Connected identities</span></article>
+          <article class="metric-card"><span class="metric-label">Avg. resonance</span><strong id="metric-resonance">—</strong><span class="metric-note">Salience across memory</span></article>
+        </section>
+
+        <div class="workspace-grid">
+          <section class="panel preflight-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Decision preflight</p><h2>Before you commit</h2></div><span class="panel-icon">◎</span></div>
+            <p class="panel-intro">Describe a consequential change. DecisionGuard classifies its weight and surfaces related decisions before implementation.</p>
+            <form id="preflight-form">
+              <label for="decision-input">Proposed change</label>
+              <textarea id="decision-input" rows="4" placeholder="e.g. Replace Redis with in-memory rate limiting to reduce infrastructure cost" required></textarea>
+              <button class="primary-button" type="submit"><span>Run preflight</span><span aria-hidden="true">→</span></button>
+            </form>
+            <div class="result-area" id="preflight-result" aria-live="polite"><div class="empty-state"><span class="empty-icon">✦</span><span>Your risk profile and related decisions will appear here.</span></div></div>
+          </section>
+
+          <section class="panel search-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Living memory</p><h2>Recall what matters</h2></div><span class="panel-icon">⌕</span></div>
+            <p class="panel-intro">Search semantic memory across embeddings, recency, resonance, emotional salience, and hippocampal activation.</p>
+            <form id="search-form">
+              <label for="search-input">Ask your memory</label>
+              <div class="search-row"><input id="search-input" type="search" placeholder="What must happen before deployment?" required /><button class="search-button" type="submit" aria-label="Search memory">→</button></div>
+              <label class="agent-label" for="agent-input">Agent <input id="agent-input" type="text" value="decisionguard-live-check" /></label>
+            </form>
+            <div class="result-area" id="search-result" aria-live="polite"><div class="empty-state"><span class="empty-icon">◌</span><span>Ask a question to retrieve a memory.</span></div></div>
+          </section>
+        </div>
+
+        <section class="panel graph-panel" id="semantic-graph">
+          <div class="panel-heading"><div><p class="eyebrow">Semantic graph</p><h2>See the connections</h2></div><div class="graph-actions"><span class="graph-count" id="graph-count">Loading graph</span><button class="icon-button" id="graph-refresh-button" type="button" title="Refresh semantic graph" aria-label="Refresh semantic graph">↻</button></div></div>
+          <p class="panel-intro graph-intro">Memories become more useful when their relationships are visible. Nodes are encoded memories; links are learned semantic associations formed during ingestion.</p>
+          <div class="graph-layout">
+            <div class="graph-viewport" id="graph-viewport">
+              <svg id="graph-canvas" viewBox="0 0 900 390" role="img" aria-label="Semantic memory graph">
+                <defs><marker id="graph-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6e9982"></path></marker></defs>
+                <g id="graph-links"></g><g id="graph-nodes"></g>
+              </svg>
+              <div class="graph-empty" id="graph-empty"><span class="empty-icon">◇</span><strong>No connected memories yet</strong><span>Ingest related memories to form semantic links.</span></div>
+            </div>
+            <aside class="graph-inspector" id="graph-inspector" aria-live="polite"><p class="eyebrow">Node inspector</p><strong>Select a memory</strong><p>Click a node to inspect its source, category, and learned associations.</p></aside>
+          </div>
+          <div class="graph-footer"><div class="graph-legend"><span><i class="legend-dot strategic"></i>Strategic</span><span><i class="legend-dot technical"></i>Technical</span><span><i class="legend-dot operational"></i>Operational</span><span><i class="legend-dot other"></i>Other</span></div><div class="graph-stats" id="graph-stats">— nodes · — links</div></div>
+        </section>
+
+        <section class="bottom-grid">
+          <section class="panel status-panel"><div class="panel-heading compact"><div><p class="eyebrow">Engine status</p><h2>System pulse</h2></div><span class="status-badge" id="status-badge">Connecting</span></div><div class="status-lines" id="status-lines"><div><span>Database</span><strong>Checking…</strong></div><div><span>Embedding engine</span><strong>Ollama / mxbai</strong></div><div><span>LLM provider</span><strong>Groq</strong></div></div></section>
+          <section class="panel flow-panel"><div class="panel-heading compact"><div><p class="eyebrow">How it works</p><h2>One memory loop</h2></div></div><div class="flow"><span>Observe</span><i>→</i><span>Encode</span><i>→</i><span>Recall</span><i>→</i><span>Decide</span></div><p class="flow-caption">Every retrieval can make the next decision safer.</p></section>
+        </section>
+      </main>
+
+      <footer><span>DecisionGuard v2.4</span><span>Local-first embeddings · Supabase memory · Groq reasoning</span></footer>
+    </div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+.next/
+.vercel/
+drizzle/meta/
+benchmarks/longmemeval/longmemeval_*.json
+benchmarks/longmemeval/data/
+benchmarks/locomo/locomo10.json

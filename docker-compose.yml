@@ -1,0 +1,35 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: decisionguard
+      POSTGRES_PASSWORD: decisionguard
+      POSTGRES_DB: decisionguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - decisionguard_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U decisionguard -d decisionguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  decisionguard:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://decisionguard:decisionguard@db:5432/decisionguard"
+      VOYAGE_API_KEY: "${VOYAGE_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      GROQ_API_KEY: "${GROQ_API_KEY:-}"
+      DECISIONGUARD_LLM_PROVIDER: "${DECISIONGUARD_LLM_PROVIDER:-anthropic}"
+      EMBEDDING_PROVIDER: "${EMBEDDING_PROVIDER:-ollama}"
+      OLLAMA_URL: "${DECISIONGUARD_DOCKER_OLLAMA_URL:-http://host.docker.internal:11434}"
+    ports:
+      - "3100:3100"
+
+volumes:
+  decisionguard_data:
