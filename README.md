@@ -189,6 +189,12 @@ The dashboard's **Semantic graph** panel reads `/api/v1/graph` for the agent ent
 
 For a team demo, ingest a small set of real notes, decisions, or incident records through `decisionguard_ingest` (MCP) or `/api/v1/ingest` (REST), refresh the graph, then walk through one node and its links. The same graph can be retrieved by an MCP-compatible client with `decisionguard_graph`, which returns `nodes`, `synapses`, and `stats` for the selected `agent_id`.
 
+### Dashboard screenshots
+
+![DecisionGuard dashboard overview](docs/screenshots/dashboard-overview.png)
+
+![DecisionGuard semantic graph panel](docs/screenshots/semantic-graph.png)
+
 ### Decision safety demo
 
 The decision layer can be demonstrated without PostgreSQL or API credentials:
