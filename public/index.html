@@ -67,6 +67,19 @@
           </section>
         </div>
 
+        <section class="panel ingest-panel">
+          <div class="panel-heading"><div><p class="eyebrow">Memory intake</p><h2>Give the graph something to learn</h2></div><span class="panel-icon">＋</span></div>
+          <p class="panel-intro ingest-intro">Add real notes, decisions, or incident evidence manually. Each saved memory is embedded, classified, and connected to related memories automatically.</p>
+          <form id="ingest-form">
+            <div class="ingest-form-grid">
+              <div><label for="ingest-input">Memory or source note</label><textarea id="ingest-input" rows="5" placeholder="e.g. Finance requires reconciliation to stay green for seven days before the migration can proceed." required></textarea></div>
+              <div class="ingest-settings"><label for="ingest-agent-input">Agent <input id="ingest-agent-input" type="text" value="payment-platform-demo" /></label><label for="ingest-priority">Priority <select id="ingest-priority"><option value="0">Critical</option><option value="1" selected>High</option><option value="2">Normal</option><option value="3">Low</option><option value="4">Ephemeral</option></select></label><p class="field-help">Use the same agent for related notes so the semantic graph can form links between them.</p></div>
+            </div>
+            <button class="primary-button" type="submit"><span>Save to memory</span><span aria-hidden="true">→</span></button>
+          </form>
+          <div class="ingest-result" id="ingest-result" aria-live="polite"></div>
+        </section>
+
         <section class="panel graph-panel" id="semantic-graph">
           <div class="panel-heading"><div><p class="eyebrow">Semantic graph</p><h2>See the connections</h2></div><div class="graph-actions"><span class="graph-count" id="graph-count">Loading graph</span><button class="icon-button" id="graph-refresh-button" type="button" title="Refresh semantic graph" aria-label="Refresh semantic graph">↻</button></div></div>
           <p class="panel-intro graph-intro">Memories become more useful when their relationships are visible. Nodes are encoded memories; links are learned semantic associations formed during ingestion.</p>

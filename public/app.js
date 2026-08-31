@@ -12,8 +12,10 @@ const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => (
 let graphNodeData = new Map();
 let graphLinks = [];
 
+const agentInputSelectors = ["#agent-input", "#ingest-agent-input"];
+const getAgentId = () => $("#agent-input").value.trim() || $("#ingest-agent-input").value.trim();
 const savedAgentId = localStorage.getItem("decisionguard-agent");
-if (savedAgentId) $("#agent-input").value = savedAgentId;
+if (savedAgentId) agentInputSelectors.forEach((selector) => { if ($(selector)) $(selector).value = savedAgentId; });
 
 async function loadStatus() {
   try {
@@ -83,7 +85,7 @@ function renderGraph(data) {
 }
 
 async function loadGraph() {
-  const agentId = $("#agent-input").value.trim();
+  const agentId = getAgentId();
   if (!agentId) return;
   try { renderGraph(await api(`/api/v1/graph?agentId=${encodeURIComponent(agentId)}&limit=120`)); } catch (error) { setText("#graph-count", "Unavailable"); $("#graph-stats").innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`; $("#graph-empty").hidden = false; }
 }
@@ -95,14 +97,23 @@ $("#preflight-form").addEventListener("submit", async (event) => {
 });
 
 $("#search-form").addEventListener("submit", async (event) => {
-  event.preventDefault(); const button = event.currentTarget.querySelector("button"); const query = $("#search-input").value.trim(); const agentId = $("#agent-input").value.trim(); if (!query || !agentId) return;
+  event.preventDefault(); const button = event.currentTarget.querySelector("button"); const query = $("#search-input").value.trim(); const agentId = getAgentId(); if (!query || !agentId) return;
   button.disabled = true; button.textContent = "…";
   try { renderSearch(await api("/api/v1/search", { method: "POST", body: JSON.stringify({ query, agentId, limit: 3 }) })); } catch (error) { $("#search-result").innerHTML = `<div class="error">${escapeHtml(error.message)}</div>`; } finally { button.disabled = false; button.textContent = "→"; }
 });
 
+$("#ingest-form").addEventListener("submit", async (event) => {
+  event.preventDefault(); const button = event.currentTarget.querySelector("button"); const content = $("#ingest-input").value.trim(); const agentId = getAgentId(); if (!content || !agentId) return;
+  button.disabled = true; button.querySelector("span").textContent = "Saving…"; $("#ingest-result").textContent = "Encoding memory and forming associations…";
+  try {
+    const data = await api("/api/v1/ingest", { method: "POST", body: JSON.stringify({ agentId, content, source: "dashboard-manual", sourceType: "api", priority: Number($("#ingest-priority").value) }) });
+    $("#ingest-input").value = ""; $("#ingest-result").textContent = `Saved ${data.chunksStored} memory ${data.chunksStored === 1 ? "chunk" : "chunks"}; formed ${data.synapsesFormed} ${data.synapsesFormed === 1 ? "link" : "links"}.`; await loadGraph();
+  } catch (error) { $("#ingest-result").innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`; } finally { button.disabled = false; button.querySelector("span").textContent = "Save to memory"; }
+});
+
 $("#graph-nodes").addEventListener("click", (event) => { const target = event.target.closest(".graph-node"); if (target) inspectGraphNode(graphNodeData.get(Number(target.dataset.nodeId))); });
 $("#graph-nodes").addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); const target = event.target.closest(".graph-node"); if (target) inspectGraphNode(graphNodeData.get(Number(target.dataset.nodeId))); } });
-$("#agent-input").addEventListener("input", (event) => { localStorage.setItem("decisionguard-agent", event.currentTarget.value.trim()); });
+agentInputSelectors.forEach((selector) => { const input = $(selector); if (!input) return; input.addEventListener("input", (event) => { const value = event.currentTarget.value.trim(); localStorage.setItem("decisionguard-agent", value); agentInputSelectors.forEach((otherSelector) => { if (otherSelector !== selector && $(otherSelector)) $(otherSelector).value = value; }); }); });
 $("#refresh-button").addEventListener("click", () => { loadStatus(); loadGraph(); });
 $("#graph-refresh-button").addEventListener("click", loadGraph);
 loadStatus();

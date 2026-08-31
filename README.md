@@ -195,6 +195,16 @@ For a team demo, ingest a small set of real notes, decisions, or incident record
 
 ![DecisionGuard semantic graph panel](docs/screenshots/semantic-graph.png)
 
+### Manual front-end demo script
+
+1. In **Memory intake**, enter an agent such as `team-demo`, paste one real note or decision at a time, choose a priority, and click **Save to memory**. The API now creates a new agent automatically when needed.
+2. Repeat with related notes covering the problem, constraints, risks, rollout evidence, and rollback plan. Keep the same agent so the ingestion pipeline can form semantic links.
+3. In **Proposed change**, describe the consequential action the team is considering and click **Run preflight**. Explain the returned weight and category as the system’s risk gate, not an approval.
+4. In **Ask your memory**, ask a specific question about the notes you entered. Explain that the response combines semantic similarity with text, recency, resonance, priority, and activation signals.
+5. Click **Explore semantic graph** or scroll to **See the connections**. Refresh if needed, then click a node to show its source, category, resonance, and learned associations.
+
+Suggested narration: “We start with unstructured operational knowledge, encode it into memory, retrieve the relevant evidence for a decision, and expose the connections before implementation. The team can inspect where an answer came from instead of trusting an opaque recommendation.”
+
 ### Decision safety demo
 
 The decision layer can be demonstrated without PostgreSQL or API credentials:

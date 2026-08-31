@@ -39,10 +39,14 @@ router.post("/", async (req: Request, res: Response) => {
       .from(schema.agents)
       .where(eq(schema.agents.externalId, agentId));
 
-    if (!agent) {
-      res.status(404).json({ error: `Agent '${agentId}' not found` });
-      return;
-    }
+    const resolvedAgent = agent || (await db
+      .insert(schema.agents)
+      .values({
+        externalId: agentId,
+        name: agentId.charAt(0).toUpperCase() + agentId.slice(1),
+        ownerId: "dashboard",
+      })
+      .returning())[0];
 
     // Chunk content
     const chunks = chunkText(content);
@@ -58,12 +62,12 @@ router.post("/", async (req: Request, res: Response) => {
 
       // Hippocampal encoding: DG pattern separation + CA1 novelty detection
       const { sparseCode, noveltyResult } =
-        await hippocampalEncode(agent.id, embeddings[i], priority);
+        await hippocampalEncode(resolvedAgent.id, embeddings[i], priority);
 
       const [inserted] = await db
         .insert(schema.memoryNodes)
         .values({
-          agentId: agent.id,
+          agentId: resolvedAgent.id,
           content: chunks[i].text,
           source: source || null,
           sourceType,
@@ -89,7 +93,7 @@ router.post("/", async (req: Request, res: Response) => {
       // Store hippocampal code (DG sparse representation)
       await db.insert(schema.hippocampalCodes).values({
         memoryId: inserted.id,
-        agentId: agent.id,
+        agentId: resolvedAgent.id,
         sparseIndices: sparseCode.indices,
         sparseValues: sparseCode.values,
         sparseDim: sparseCode.dim,
@@ -100,7 +104,7 @@ router.post("/", async (req: Request, res: Response) => {
       const { vector: ev, salience } = analyzeValence(chunks[i].text);
       await db.insert(schema.emotionalValence).values({
         memoryId: inserted.id,
-        agentId: agent.id,
+        agentId: resolvedAgent.id,
         valence: ev.valence,
         arousal: ev.arousal,
         dominance: ev.dominance,
@@ -117,7 +121,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     // Form synapses
-    const synapsesFormed = await formSynapses(agent.id, insertedIds);
+    const synapsesFormed = await formSynapses(resolvedAgent.id, insertedIds);
 
     res.json({
       agentId,

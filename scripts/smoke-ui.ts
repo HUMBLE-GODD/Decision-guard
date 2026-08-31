@@ -8,8 +8,8 @@ for (const [name, value] of [["public/index.html", html], ["public/styles.css", 
   if (!existsSync(name) || value.length < 100) throw new Error(`${name} is missing or unexpectedly small`);
 }
 
-for (const marker of ["preflight-form", "search-form", "graph-canvas", "metric-memories", "/api/v1/status", "/api/v1/decisions/preview", "/api/v1/search", "/api/v1/graph"]) {
+for (const marker of ["preflight-form", "search-form", "ingest-form", "graph-canvas", "metric-memories", "/api/v1/status", "/api/v1/decisions/preview", "/api/v1/search", "/api/v1/ingest", "/api/v1/graph"]) {
   if (!html.includes(marker) && !js.includes(marker)) throw new Error(`UI marker missing: ${marker}`);
 }
 
-console.log(JSON.stringify({ status: "ok", assets: ["index.html", "styles.css", "app.js"], interactions: ["status", "decision-preflight", "memory-search", "semantic-graph"] }, null, 2));
+console.log(JSON.stringify({ status: "ok", assets: ["index.html", "styles.css", "app.js"], interactions: ["status", "decision-preflight", "memory-search", "memory-intake", "semantic-graph"] }, null, 2));
